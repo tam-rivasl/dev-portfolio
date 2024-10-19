@@ -1,5 +1,4 @@
 ---
-import { basics } from "@cv";
 import Section from "@/components/Section.astro";
 import Mail from "@/icons/Mail.astro";
 import Phone from "@/icons/Phone.astro";
@@ -9,16 +8,25 @@ import GitHub from "@/icons/GitHub.astro";
 import WorldMap from "@/icons/WorldMap.astro";
 import type { SocialIcon } from "@/types";
 
-const { name, label, image, location, profiles, phone, email } = basics;
-const { city, region } = location;
+const { basics } = Astro.props;
 
+const { name, label, image, location,  phone, email } = basics;
+const city = location?.city ?? "Unknown city";
+const region = location?.region ?? "Unknown region";
+interface Profiles {
+  network: string;
+  username: string;
+  url: string;
+}
+
+const { profiles }: { profiles?: Profiles[] } = Astro.props;
 const SOCIAL_ICONS: SocialIcon = {
 	GitHub,
 	LinkedIn,
 	X,
 };
 
-const linkedInfo = profiles.find(({ network }) => network === "LinkedIn");
+const linkedInfo = profiles?.find(({ network }) => network === "LinkedIn");
 const linkedUrl = linkedInfo?.url;
 
 const printInfo = [email, phone, linkedUrl].filter(Boolean).join(" • ");
@@ -67,7 +75,7 @@ const printInfo = [email, phone, linkedUrl].filter(Boolean).join(" • ");
 					)
 				}
 				{
-					profiles.map(({ network, url }) => {
+					profiles?.map(({ network, url }) => {
 						const Icon = SOCIAL_ICONS[network];
 
 						return (

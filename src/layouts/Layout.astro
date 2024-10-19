@@ -1,18 +1,26 @@
 ---
-import { basics } from "@cv";
 import Vengeance from "@/layouts/Vengeance.astro";
-
 interface Props {
 	title: string;
+	basics: {
+    name: string;
+    label: string;
+    image: string;
+    summary: string;
+    theme: string;
+	url: string;
+	};
 }
 
-const { title } = Astro.props;
+const { title, basics } = Astro.props;
 
-const { image, summary, url, theme } = basics;
+
+// Extraer los valores desde `basics`
+let { image, summary, url, theme, name } = basics;
 ---
 
 <!doctype html>
-<html lang="en">
+<html >
 	<head>
 		<meta charset="UTF-8" />
 		<title>{title}</title>

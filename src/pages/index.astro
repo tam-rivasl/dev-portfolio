@@ -1,6 +1,5 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-
 import About from "@/components/sections/About.astro";
 import Education from "@/components/sections/Education.astro";
 import Experience from "@/components/sections/Experience.astro";
@@ -10,28 +9,56 @@ import Skills from "@/components/sections/Skills.astro";
 import Tail from "@/components/sections/Tail.astro";
 import KeyboardManager from "@/components/KeyboardManager.astro";
 import ThemeSwitch from "@/components/ThemeSwitch.astro";
+import LanguageSwitch from "@/components/LanguageSwitch.jsx";
+import cv from "public/cv.json";
 
-import { basics } from "@cv";
-const { name, label } = basics;
+
+// Definir el idioma seleccionado por defecto
+let selectedLang = 'en';
+
+// Función para obtener los datos dinámicos en función del idioma seleccionado
+const getData = (lang: any) => {
+  const data = cv["cv-json"][0];
+  return data[lang === "es" ? "language-es" : "language-en"][0];
+};
+
+// Obtener los datos iniciales para el idioma seleccionado
+let { basics, work, education,  projects } = getData(selectedLang);
+const {label, name} = basics;
+// Función para actualizar el contenido dinámicamente al cambiar el idioma
+const onLanguageChange = (newLang: string) => {
+	console.log("Language changed to:", newLang);
+  selectedLang = newLang;
+  ({ basics, work, education, projects } = getData(newLang));
+  console.log("Language changed to:", newLang);
+};
+
+
 ---
 
-<Layout title={`${name} Portafolio - ${label}`}>
+<!-- Pasar la función para cambiar idioma al componente React -->
+<LanguageSwitch  onLanguageChange={onLanguageChange} />
+
+<!-- Pasamos el idioma seleccionado y la función de cambio al selector -->
+<Layout title=`${name} Portafolio - ${label}` 
+basics={basics}>
+	
 	<main class="relative grid max-w-7xl gap-12 p-8 max-sm:py-16 md:grid-cols-6 md:p-16 xl:gap-24 print:max-w-none print:grid-cols-1 print:gap-6">
 		<div class="space-y-6 md:col-span-2 print:col-span-1 print:grid print:grid-cols-2 print:gap-5 print:space-y-0">
-			<Hero />
-			<About />
+			<Hero basics={basics} />
+			<About summary={basics.summary}/>
 			<ThemeSwitch />
 		</div>
 		<div class="space-y-12 md:col-span-4 print:col-span-1 print:grid print:grid-cols-4 print:gap-2 print:space-y-0">
-			<Experience className="print:col-span-3" />
-			<Projects className="print:hidden" />
-			<Skills className="print:hidden" />
-			<Education className="order-first" />
+			<Experience className="print:col-span-3" work={work}/>
+			<Projects className="print:hidden" projects={projects} />
+			{/*<Skills className="print:hidden"  skills={skills}/>*/}
+			<Education className="order-first " education={education}  />
 		</div>
 		<Tail />
 	</main>
 
-	<KeyboardManager />
+	<KeyboardManager basics={basics}/>
 </Layout>
 
 <style>

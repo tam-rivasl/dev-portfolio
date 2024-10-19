@@ -1,14 +1,23 @@
 ---
 import Section from "../Section.astro";
 
-import { education } from "@cv";
-import { certificates } from "@cv";
+// Define la interfaz para los elementos de educación
+interface EducationItem {
+  institution: string;
+  startDate: string;
+  endDate?: string;
+  area: string;
+  url: string;
+}
+
+const { education }: { education?: EducationItem[] } = Astro.props;
+//import { certificates } from "@cv";
 ---
 
 <Section className={Astro.props.className} title="Education">
 	<ul class="space-y-4 py-3 print:space-y-0">
 		{
-			education.map(({ institution, startDate, endDate, area, url }) => {
+			education?.map(({ institution, startDate, endDate, area, url }) => {
 				const startYear = new Date(startDate).getFullYear();
 				const endYear = endDate != null ? new Date(endDate).getFullYear() : "Actual";
 				const years = `${startYear} - ${endYear}`;
@@ -35,7 +44,7 @@ import { certificates } from "@cv";
 		}
 	</ul>
 
-	{
+	{/* 
 		certificates.length > 0 && (
 			<>
 				<h4>Certificates</h4>
@@ -65,5 +74,5 @@ import { certificates } from "@cv";
 				</ul>
 			</>
 		)
-	}
+	*/}
 </Section>
